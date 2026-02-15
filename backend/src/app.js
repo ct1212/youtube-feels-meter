@@ -19,6 +19,27 @@ app.use(express.urlencoded({ extended: true }));
 // Apply general rate limiting to all API routes
 app.use('/api', apiLimiter);
 
+// Root endpoint - API documentation
+app.get('/', (req, res) => {
+  res.json({
+    name: 'YouTube Feels Meter API',
+    version: '1.0.0',
+    description: 'Analyze YouTube playlists for mood and emotional vibes using MusicBrainz + genre-based audio analysis',
+    endpoints: {
+      health: 'GET /health',
+      playlist: {
+        info: 'POST /api/playlist/info - Get playlist metadata and videos',
+        analyze: 'POST /api/playlist/analyze - Full playlist analysis with feels scores'
+      },
+      analyze: {
+        batch: 'POST /api/analyze/batch - Analyze multiple videos',
+        single: 'POST /api/analyze/single - Analyze a single video'
+      }
+    },
+    repository: 'https://github.com/ct1212/youtube-feels-meter'
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
