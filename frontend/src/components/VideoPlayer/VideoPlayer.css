@@ -1,0 +1,128 @@
+.video-player {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.player-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.player-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+.youtube-player {
+  width: 100%;
+  height: 100%;
+}
+
+.player-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.placeholder-content {
+  text-align: center;
+  color: white;
+}
+
+.placeholder-content h3 {
+  font-size: 4rem;
+  margin-bottom: 10px;
+}
+
+.placeholder-content p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.now-playing {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.now-playing-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.playing-icon {
+  font-size: 0.8rem;
+}
+
+.video-title {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.channel-name {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.video-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.feels-badge,
+.matched-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+}
+
+.feels-badge {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.matched-badge {
+  background: #50C878;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .video-title {
+    font-size: 1.1rem;
+  }
+
+  .channel-name {
+    font-size: 0.85rem;
+  }
+}

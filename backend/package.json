@@ -1,0 +1,41 @@
+{
+  "name": "youtube-feels-meter-backend",
+  "version": "1.0.0",
+  "description": "Backend API for YouTube Feels Meter - mood-based playlist player",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "npm test -- --watch",
+    "test:integration": "npm test -- tests/integration"
+  },
+  "keywords": [
+    "youtube",
+    "spotify",
+    "music",
+    "mood",
+    "playlist"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.0",
+    "redis": "^4.6.0",
+    "string-similarity": "^4.0.4",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "jest": "^29.7.0",
+    "nock": "^13.5.0",
+    "nodemon": "^3.0.2",
+    "redis-mock": "^0.56.3",
+    "supertest": "^6.3.3"
+  }
+}
