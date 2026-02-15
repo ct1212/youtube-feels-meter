@@ -67,29 +67,42 @@ router.post('/analyze', playlistRateLimiter, async (req, res, next) => {
     const playlist = await youtubeService.getPlaylist(playlistUrl);
     console.log(`✅ Fetched ${playlist.videoCount} videos from "${playlist.title}"`);
 
-    // Analyze all videos
+    // Limit to first 50 videos to avoid Vercel timeout (10s limit on free tier)
+    const MAX_VIDEOS = 50;
+    const videosToAnalyze = playlist.videos.slice(0, MAX_VIDEOS);
+    console.log(`📊 Analyzing first ${videosToAnalyze.length} videos...`);
+
+    // Analyze videos in parallel batches
+    const BATCH_SIZE = 10;
     const analyzedVideos = [];
     let totalEnergy = 0;
     let totalTempo = 0;
     let matchedCount = 0;
 
-    for (const video of playlist.videos) {
-      const result = await musicAnalysisService.matchVideo(video);
+    for (let i = 0; i < videosToAnalyze.length; i += BATCH_SIZE) {
+      const batch = videosToAnalyze.slice(i, i + BATCH_SIZE);
 
-      const analyzedVideo = {
-        ...video,
-        feelsScore: result.feelsScore,
-        matched: result.matched,
-        audioFeatures: result.audioFeatures
-      };
+      const batchResults = await Promise.all(
+        batch.map(video => musicAnalysisService.matchVideo(video))
+      );
 
-      analyzedVideos.push(analyzedVideo);
+      batchResults.forEach((result, index) => {
+        const video = batch[index];
+        const analyzedVideo = {
+          ...video,
+          feelsScore: result.feelsScore,
+          matched: result.matched,
+          audioFeatures: result.audioFeatures
+        };
 
-      if (result.matched && result.audioFeatures) {
-        totalEnergy += result.audioFeatures.energy || 0;
-        totalTempo += result.audioFeatures.tempo || 0;
-        matchedCount++;
-      }
+        analyzedVideos.push(analyzedVideo);
+
+        if (result.matched && result.audioFeatures) {
+          totalEnergy += result.audioFeatures.energy || 0;
+          totalTempo += result.audioFeatures.tempo || 0;
+          matchedCount++;
+        }
+      });
     }
 
     // Calculate overall stats
@@ -100,12 +113,14 @@ router.post('/analyze', playlistRateLimiter, async (req, res, next) => {
     });
 
     const analysis = {
-      totalVideos: playlist.videoCount,
+      totalVideos: analyzedVideos.length,
+      playlistVideoCount: playlist.videoCount,
       matchedVideos: matchedCount,
       overallScore,
       averageEnergy: matchedCount > 0 ? totalEnergy / matchedCount : 0,
       averageTempo: matchedCount > 0 ? totalTempo / matchedCount : 0,
-      videos: analyzedVideos
+      videos: analyzedVideos,
+      limited: playlist.videoCount > MAX_VIDEOS
     };
 
     console.log(`✅ Analysis complete: ${matchedCount}/${playlist.videoCount} matched, overall score: ${Math.round(overallScore)}`);
